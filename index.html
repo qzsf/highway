@@ -1,10 +1,15 @@
+<!-- 
+    An ant moves arround.
+    If the current spot is empty then mark it and move right one step.
+    If the current spot is marked then clear it and move left one step.
+-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dot Moving</title>
+    <title>Highway</title>
     <style>
         canvas {
             border: 1px solid black;
@@ -13,93 +18,102 @@
 </head>
 
 <body>
-    <canvas id="myCanvas" width="4000" height="4000"></canvas>
+    <canvas id="myCanvas" width="1600" height="800"></canvas>
 
     <script>
-        // Get the canvas element and its context
-        var canvas = document.getElementById("myCanvas");
-        var ctx = canvas.getContext("2d");
+        let step = 0;
+        // initialize the dot
+        // Set size, starting position, and direction of the dot
+        let dot = {
+            size: 10,
+            color: 'blue',
+            position: { x: 800, y: 400 },
+            direction: 'up'
+        }
 
-        // Set starting position and direction of the dot
-        var x = 1000;
-        var y = 1000;
-        let direction = 'up';   // initial direction
+        // Get the canvas element and its context
+        let canvas = document.getElementById("myCanvas");
+        let ctx = canvas.getContext("2d", { willReadFrequently: true });
+        ctx.font = "15px Arial";
+        ctx.fillStyle = dot.color; // Set dot color
+
 
         // Function to draw the dot
-        function drawBlackDot() {
+        function drawDot() {
             // ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            // console.log(ctx.getImageData(x, y, 1, 1).data);
-            ctx.fillStyle = "red"; // Set dot color
-            ctx.fillRect(x, y, 10, 10); // Draw the dot
+            ctx.fillRect(dot.position.x, dot.position.y, dot.size, dot.size); // Draw the dot
         }
-        function drawWhiteDot() {
-            // ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-            // console.log(ctx.getImageData(x, y, 1, 1).data);
-            ctx.fillStyle = "green"; // Set dot color
-            ctx.fillRect(x, y, 10, 10); // Draw the dot
+
+        // Function to clear the dot
+        function clearDot() {
+            ctx.clearRect(dot.position.x, dot.position.y, dot.size, dot.size);
+        }
+
+        // Function to get info about a pixel
+        function getDotData() {
+            // ctx.getImageData(dot.position.x, dot.position.y, 1, 1).data is an array 
+            // that contains r, g, b, and alpha color
+            // if ctx.getImageData(dot.position.x, dot.position.y, 1, 1).data[3] is 0 means the point is empty
+            return ctx.getImageData(dot.position.x, dot.position.y, 1, 1);
         }
 
         // Function to move the dot
         function moveDot() {
-            console.log('direction: ' + direction);
-            console.log('color: ' + ctx.getImageData(x, y, 1, 1).data);
-            switch (direction) {
+            step++;
+            // clear the top-left corner of the canvas and update steps
+            ctx.clearRect(0, 0, 150, 50);
+            ctx.fillText("Step: " + step, 20, 20);
+
+            console.log('direction: ' + dot.direction);
+            console.log('color: ' + getDotData().data);
+            switch (dot.direction) {
                 case 'up':
-                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
-                        drawBlackDot();
-                        x = x + 10; // Increment x-coordinate to move the dot right
-                        direction = 'right';
+                    if (getDotData().data[3] === 0) {
+                        drawDot();
+                        dot.position.x = dot.position.x + 10; // Increment x-coordinate to move the dot right
+                        dot.direction = 'right';
                     } else {
-                        drawWhiteDot();
-                        x = x - 10; // move the dot left
-                        // drawBlackDot();
-                        direction = 'left';
+                        clearDot();
+                        dot.position.x = dot.position.x - 10; // move the dot left
+                        dot.direction = 'left';
                     }
                     break;
                 case 'down':
-                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
-                        drawBlackDot();
-                        x = x - 10; // move the dot left
-                        direction = 'left';
+                    if (getDotData().data[3] === 0) {
+                        drawDot();
+                        dot.position.x = dot.position.x - 10; // move the dot left
+                        dot.direction = 'left';
                     } else {
-                        drawWhiteDot();
-                        x = x + 10; // move the dot right
-                        // drawBlackDot();
-                        direction = 'right';
+                        clearDot();
+                        dot.position.x = dot.position.x + 10; // move the dot right
+                        dot.direction = 'right';
                     }
                     break;
                 case 'left':
-                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
-                        drawBlackDot();
-                        y = y - 10; // move the dot up
-                        direction = 'up';
+                    if (getDotData().data[3] === 0) {
+                        drawDot();
+                        dot.position.y = dot.position.y - 10; // move the dot up
+                        dot.direction = 'up';
                     } else {
-                        drawWhiteDot();
-                        y = y + 10; // move the dot down
-                        // drawBlackDot();
-                        direction = 'down';
+                        clearDot();
+                        dot.position.y = dot.position.y + 10; // move the dot down
+                        dot.direction = 'down';
                     }
                     break;
                 case 'right':
-                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
-                        drawBlackDot();
-                        y = y + 10; // move the dot down
-                        direction = 'down';
+                    if (getDotData().data[3] === 0) {
+                        drawDot();
+                        dot.position.y = dot.position.y + 10; // move the dot down
+                        dot.direction = 'down';
                     } else {
-                        drawWhiteDot();
-                        y = y - 10; // move the dot up
-                        // drawBlackDot();
-                        direction = 'up';
+                        clearDot();
+                        dot.position.y = dot.position.y - 10; // move the dot up
+                        dot.direction = 'up';
                     }
                     break;
                 default:
                 // code block
             }
-            // x = x + 10; // Increment x-coordinate to move the dot right
-            // if (x >= canvas.width) {
-            //     x = 0; // Reset x-coordinate when dot reaches the right edge
-            // }
-            // drawBlackDot(); // Redraw the dot
         }
 
         // Set interval to repeatedly move the dot
