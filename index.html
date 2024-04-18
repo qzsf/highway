@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dot Moving</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="4000" height="4000"></canvas>
+
+    <script>
+        // Get the canvas element and its context
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        // Set starting position and direction of the dot
+        var x = 1000;
+        var y = 1000;
+        let direction = 'up';   // initial direction
+
+        // Function to draw the dot
+        function drawBlackDot() {
+            // ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            // console.log(ctx.getImageData(x, y, 1, 1).data);
+            ctx.fillStyle = "red"; // Set dot color
+            ctx.fillRect(x, y, 10, 10); // Draw the dot
+        }
+        function drawWhiteDot() {
+            // ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            // console.log(ctx.getImageData(x, y, 1, 1).data);
+            ctx.fillStyle = "green"; // Set dot color
+            ctx.fillRect(x, y, 10, 10); // Draw the dot
+        }
+
+        // Function to move the dot
+        function moveDot() {
+            console.log('direction: ' + direction);
+            console.log('color: ' + ctx.getImageData(x, y, 1, 1).data);
+            switch (direction) {
+                case 'up':
+                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
+                        drawBlackDot();
+                        x = x + 10; // Increment x-coordinate to move the dot right
+                        direction = 'right';
+                    } else {
+                        drawWhiteDot();
+                        x = x - 10; // move the dot left
+                        // drawBlackDot();
+                        direction = 'left';
+                    }
+                    break;
+                case 'down':
+                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
+                        drawBlackDot();
+                        x = x - 10; // move the dot left
+                        direction = 'left';
+                    } else {
+                        drawWhiteDot();
+                        x = x + 10; // move the dot right
+                        // drawBlackDot();
+                        direction = 'right';
+                    }
+                    break;
+                case 'left':
+                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
+                        drawBlackDot();
+                        y = y - 10; // move the dot up
+                        direction = 'up';
+                    } else {
+                        drawWhiteDot();
+                        y = y + 10; // move the dot down
+                        // drawBlackDot();
+                        direction = 'down';
+                    }
+                    break;
+                case 'right':
+                    if (ctx.getImageData(x, y, 1, 1).data[0] === 0) {
+                        drawBlackDot();
+                        y = y + 10; // move the dot down
+                        direction = 'down';
+                    } else {
+                        drawWhiteDot();
+                        y = y - 10; // move the dot up
+                        // drawBlackDot();
+                        direction = 'up';
+                    }
+                    break;
+                default:
+                // code block
+            }
+            // x = x + 10; // Increment x-coordinate to move the dot right
+            // if (x >= canvas.width) {
+            //     x = 0; // Reset x-coordinate when dot reaches the right edge
+            // }
+            // drawBlackDot(); // Redraw the dot
+        }
+
+        // Set interval to repeatedly move the dot
+        setInterval(moveDot, 1); // Change the second parameter to adjust speed (milliseconds)
+
+    </script>
+</body>
+
+</html>
